@@ -204,3 +204,116 @@ const button = document.querySelector('button')
 // });
 
 /*--------------------------------Асинхронный код через подписки в JavaScript--------------------------------*/
+
+// setTimeout(function () {
+//     let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; // массив с результатом
+//     func1(arr);
+//     func2(arr);
+//     func3(arr);
+//     func4(arr);
+// }, 3000);
+// function func1(arr) {
+//     console.log(`Данные из [${arr}] получены`)
+//     // выведем в #message сообщение о том, что данные получены
+// }
+
+// function func2(arr) {
+//     const list = document.querySelector('#list');
+//     list.innerHTML = '';
+//     for (let e of arr) {
+//         list.innerHTML += `<li>${e}</li>`
+//     }
+//     // добавим в #list элементы массива в качестве тегов li
+// }
+
+// function func3(arr) {
+//     const amount = document.querySelector('#amount');
+//     amount.innerHTML = `Количество элементов - ${arr.length}`;
+//     // выведем в #amount количество элементов в массиве
+// }
+
+// function func4(arr) {
+//     const result = document.querySelector('#result');
+//     let sum = 0;
+//     for (let e of arr) {
+//         sum = sum + e;
+//     }
+//     result.innerHTML = `Сумма всех элементов = ${sum}`;
+//     // выведем в #result сумму элементов массива
+// }
+
+
+
+// Решение через подписки
+
+
+let subsribers = {
+    'func1': [1, 2, 3],
+    // 'имя события 2': [массив коллбэков события],
+    // 'имя события 3': [массив коллбэков события],
+};
+
+
+setTimeout(function () {
+    emit('hover', [1, 2, 3, 4, 5, 6, 7]);
+}, 3000);
+
+on('loaded', function (arr) {
+    console.log(`Данные из [${arr}] получены`)
+    // выведем в #message сообщение о том, что данные получены
+    // тут код из func1
+});
+
+on('loaded', function (arr) {
+    // тут код из func2
+    const list = document.querySelector('#list');
+    list.innerHTML = '';
+    for (let e of arr) {
+        list.innerHTML += `<li>${e}</li>`
+    }
+    // добавим в #list элементы массива в качестве тегов li
+});
+
+on('loaded', function (arr) {
+    // тут код из func3
+    const amount = document.querySelector('#amount');
+    amount.innerHTML = `Количество элементов - ${arr.length}`;
+    // выведем в #amount количество элементов в массиве
+});
+
+on('loaded', function (arr) {
+    // тут код из func4
+    const result = document.querySelector('#result');
+    let sum = 0;
+    for (let e of arr) {
+        sum = sum + e;
+    }
+    result.innerHTML = `Сумма всех элементов = ${sum}`;
+    // выведем в #result сумму элементов массива
+});
+
+
+// Функция для испускания события:
+// function emit('имя события', 'данные события') {
+
+// }
+
+// Функция для подписки на событие:
+// function on('имя события', 'обработчик события') {
+
+// }
+function emit(name, data) {
+    if (subsribers[name]) {
+        for (let callback of subsribers[name]) {
+            callback(data);
+        }
+    }
+}
+
+function on(name, callback) {
+    if (!subsribers[name]) {
+        subsribers[name] = [];
+    }
+    subsribers[name].push(callback);
+}
+
