@@ -243,9 +243,7 @@ const button = document.querySelector('button')
 // }
 
 
-
 // Решение через подписки
-
 
 let subsribers = {
     'func1': [1, 2, 3],
@@ -292,15 +290,11 @@ on('loaded', function (arr) {
     // выведем в #result сумму элементов массива
 });
 
-
 // Функция для испускания события:
 // function emit('имя события', 'данные события') {
-
 // }
-
 // Функция для подписки на событие:
 // function on('имя события', 'обработчик события') {
-
 // }
 function emit(name, data) {
     if (subsribers[name]) {
@@ -309,7 +303,6 @@ function emit(name, data) {
         }
     }
 }
-
 function on(name, callback) {
     if (!subsribers[name]) {
         subsribers[name] = [];
@@ -317,3 +310,4 @@ function on(name, callback) {
     subsribers[name].push(callback);
 }
 
+/*------------------------Введение в промисы в JavaScript------------------------*/
