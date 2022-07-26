@@ -463,26 +463,173 @@ function arrayFunctionPromise() {
     })
 }
 
-
-function rndm() {
-    let rand = (Math.random() * 10000).toFixed(0)
-    return rand
-}
-let promisesArray = [];
-for (let i = 0; i < 10; i++) {
-    let time = Number(rndm());
-    promisesArray.push(new Promise(resolve => setTimeout(() => resolve(time), time)))
-}
-Promise.race(promisesArray).then(function (res) {
-    console.log(res)
-})
-
-Promise.all(promisesArray).then(function (res) {
-    return res;
-}).then(function (res) {
-    let sum = 0;
-    for (let i of res) {
-        sum = sum + Number(i);
+function practiceAllPromise() {
+    function rndm() {
+        let rand = (Math.random() * 10000).toFixed(0)
+        return rand
     }
-    console.log(sum)
-})
+    let promisesArray = [];
+    for (let i = 0; i < 10; i++) {
+        let time = Number(rndm());
+        promisesArray.push(new Promise(resolve => setTimeout(() => resolve(time), time)))
+    }
+    Promise.race(promisesArray).then(function (res) {
+        console.log(res)
+    })
+
+    Promise.all(promisesArray).then(function (res) {
+        return res;
+    }).then(function (res) {
+        let sum = 0;
+        for (let i of res) {
+            sum = sum + Number(i);
+        }
+        console.log(sum)
+    })
+}
+
+/*---------------------Создание сработавших промисов в JavaScript---------------------*/
+
+function createResolvePromise() {
+    // Promise.resolve
+    // Promise.reject
+
+    function func(num) {
+        if (num > 0) {
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    resolve(num * num);
+                }, 1000);
+            });
+        } else if (num === 0) {
+            return Promise.resolve(0);
+        } else {
+            return Promise.reject('incorrect number'); // вернем отклоненный промис
+        }
+    }
+    // Результатом функции сверху мы возвращаем промис, поэтому можно делать then
+    func(1).then(function (res) {
+        console.log(res)
+    })
+}
+/*---------------------Промисификация асинхронного кода в JavaScript---------------------*/
+function promisification() {
+    function loadImage(name) {
+        return new Promise(function (resolve, reject) {
+            let image = document.createElement('img');
+            image.src = `/img/${name}`;
+
+            image.addEventListener('load', function () {
+                resolve(image);
+            });
+
+            image.addEventListener('error', function () {
+                reject(new Error(`image ${name} load error`));
+            });
+        })
+    }
+
+    // loadImage('img.png').then(function (image) {
+    //     document.body.appendChild(image);
+    // }).catch(function (error) {
+    //     console.log(error)
+    // });
+
+    let images = ['img.png', 'img2.png', 'img3.png', 'img4.png']
+
+    for (let i of images) {
+        loadImage(i).then(function (image) {
+            document.body.appendChild(image);
+        }).catch(function (error) {
+            console.log(error)
+        });
+    }
+
+    // Выполните его промисификацию.
+
+    function promisDOMLoad() {
+        return new Promise(function (resolve, reject) {
+            window.addEventListener('DOMContentLoaded', function () {
+                resolve('dom загружен')
+            });
+        })
+    }
+    promisDOMLoad().then(function (result) {
+        console.log(result)
+    }).catch(function (error) {
+        console.log(error)
+    })
+}
+
+/*---------------------Промисы в синхронном стиле в JavaScript---------------------*/
+function promiseInSync() {
+
+    function getSmth(num) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => resolve(num * num), 1000)
+        });
+    }
+
+    // function func() {
+    //     let res = getSmth(2);
+    //     console.log(res); // выведет 4
+    // }
+    // func()
+
+    // СВЕРХУ НИЧЕГО НЕ ПОЛУЧИТСЯ, ТАК КАК КОНСОЛЬ ЛОГ НЕ ЖДЕТ АСИНХРОННУЮ ФУНКЦИЮ. РЕШЕНИЕ:
+
+    async function func(num, num2, num3) {
+        let res = await getSmth(num);
+        console.log(res)
+        let res2 = await getSmth(num2);
+        console.log(res2)
+        let res3 = await getSmth(num3)
+        console.log(res3)
+    }
+    func(4, 5, 7);
+
+    // А теперь будем вызывать getSmth в цикле:
+
+    async function func2() {
+        let arr = [1, 10];
+        let sum = 0;
+        for (let elem of arr) {
+            sum += await getSmth(elem);
+        }
+        console.log(sum);
+    }
+
+    func2();
+}
+
+
+function getSmth(num) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(num * num), 1000)
+    });
+}
+function getSmth2(num) {
+    return new Promise((resolve, reject) => {
+        reject('Error not actual :)')
+    });
+}
+// Перепишите его через синхронный синтаксис промисов.
+async function func() {
+    let res1 = await getSmth(2);
+    let res2 = await getSmth(3);
+    let res3 = await getSmth(4);
+    console.log(res1 + res2 + res3);
+}
+
+func();
+
+// Обработка исключительных ситуаций
+async function func2() {
+    try {
+        let res = await getSmth2(2);
+        console.log(res);
+    } catch (err) {
+        console.log(err);
+    }
+}
+func2();
