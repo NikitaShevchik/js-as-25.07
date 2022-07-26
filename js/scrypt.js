@@ -355,63 +355,134 @@ function promiseFunctionFirst() {
 }
 
 // Исключительные ситуации
+function exceptionalSituations() {
+    let promise4 = new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            let isError = false;
+            if (!isError) {
+                resolve([1, 2, 3, 4, 5]);   // данные промиса
+            } else {
+                reject('error in promise'); // ваш текст ошибки
+            }
+        }, 10000);
+    });
 
-let promise4 = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        let isError = false;
-        if (!isError) {
-            resolve([1, 2, 3, 4, 5]);   // данные промиса
-        } else {
-            reject('error in promise'); // ваш текст ошибки
+    promise4.then(function (result) {
+        console.log(result); // выведет результат промиса
+    }, function (error) {
+        console.log(error);  // выведет текст ошибки
+    });
+
+    let promiseRandom = new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            let rand = (Math.random() * 5).toFixed(0);
+            let res;
+            if (rand != 0) {
+                res = 1 / rand;
+                resolve(res)
+            } else {
+                reject('Случайное число = 0; На ноль нельзя делить')
+            }
+        }, 1000)
+    })
+
+    promiseRandom.then(function (result) {
+        console.log(result);
+    }, function (error) {
+        console.log(error)
+    })
+
+    // Использование объекта с ошибкой
+
+    // reject(new Error('error in promise')); // объект с ошибкой
+    // throw new Error('error in promise'); // эквивалентно reject
+
+
+    // Только обработка ошибок
+    promiseRandom.catch(
+        function (error) {
+            console.log(error);
         }
-    }, 10000);
-});
+    );
 
-promise4.then(function (result) {
-    console.log(result); // выведет результат промиса
-}, function (error) {
-    console.log(error);  // выведет текст ошибки
-});
-
-
-
-let promiseRandom = new Promise(function (resolve, reject) {
-    setTimeout(function () {
-        let rand = (Math.random() * 5).toFixed(0);
-        let res;
-        if (rand != 0) {
-            res = 1 / rand;
-            resolve(res)
-        } else {
-            reject('Случайное число = 0; На ноль нельзя делить')
-        }
-    }, 1000)
-})
-
-
-promiseRandom.then(function (result) {
-    console.log(result);
-}, function (error) {
-    console.log(error)
-})
-
-
-// Использование объекта с ошибкой
-
-// reject(new Error('error in promise')); // объект с ошибкой
-// throw new Error('error in promise'); // эквивалентно reject
-
-
-// Только обработка ошибок
-promiseRandom.catch(
-    function (error) {
-        console.log(error);
-    }
-);
-
-// Состояния промиса
-// При создании промис находится в ожидании (pending)
-// затем может стать исполненным (fulfilled), вернув полученный результат, или отклоненным (rejected)
-
+    // Состояния промиса
+    // При создании промис находится в ожидании (pending)
+    // затем может стать исполненным (fulfilled), вернув полученный результат, или отклоненным (rejected)
+}
 
 /*---------------------Цепочки промисов в JavaScript---------------------*/
+
+function chainPromise() {
+    let promise = new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            resolve('string');
+        }, 1000);
+    });
+
+    // promise.then(
+    //     function (result) {
+    //         console.log(result); // выведет 'string'
+    //     }
+    // )
+
+    promise.then(
+        function (result) {
+            return result + '!';
+        }
+    ).then(
+        function (result) {
+            console.log(result); // выведет 'string!'
+        }
+    ).catch(
+        function (error) {
+            console.log(error)// попадем сюда в случае ошибки
+        }
+    );
+    // Как правило, все ошибки цепочки перехватываются в одном месте: в конце цепочки размещается catch
+}
+
+/*---------------------Работа с массивами промисов в JavaScript---------------------*/
+
+function arrayFunctionPromise() {
+
+    let promises = [
+        new Promise(resolve => setTimeout(() => resolve(1), 1000)),
+        new Promise(resolve => setTimeout(() => resolve(2), 2000)),
+        new Promise(resolve => setTimeout(() => resolve(3), 3000)),
+    ]
+
+    Promise.all(promises).then(function (res) {
+        console.log(res)
+    }).catch(function (err) {
+        console.log(err);
+    });
+
+    // загрузка первого
+    Promise.race(promises).then(function (res) {
+        console.log(res)
+    })
+}
+
+
+function rndm() {
+    let rand = (Math.random() * 10000).toFixed(0)
+    return rand
+}
+let promisesArray = [];
+for (let i = 0; i < 10; i++) {
+    let time = Number(rndm());
+    promisesArray.push(new Promise(resolve => setTimeout(() => resolve(time), time)))
+}
+Promise.race(promisesArray).then(function (res) {
+    console.log(res)
+})
+
+Promise.all(promisesArray).then(function (res) {
+    return res;
+}).then(function (res) {
+    let sum = 0;
+    for (let i of res) {
+        sum = sum + Number(i);
+    }
+    console.log(sum)
+})
