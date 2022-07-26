@@ -1,6 +1,6 @@
 "use strict"
 // const imageBlock = document.querySelector('.imageblock');
-const button = document.querySelector('button')
+// const button = document.querySelector('button')
 
 // let image = document.createElement('img')
 // image.src = '/img/img.png'
@@ -245,69 +245,173 @@ const button = document.querySelector('button')
 
 // Решение через подписки
 
-let subsribers = {
-    'func1': [1, 2, 3],
-    // 'имя события 2': [массив коллбэков события],
-    // 'имя события 3': [массив коллбэков события],
-};
+// let subsribers = {
+//     'func1': [1, 2, 3],
+//     // 'имя события 2': [массив коллбэков события],
+//     // 'имя события 3': [массив коллбэков события],
+// };
 
 
-setTimeout(function () {
-    emit('hover', [1, 2, 3, 4, 5, 6, 7]);
-}, 3000);
+// setTimeout(function () {
+//     emit('hover', [1, 2, 3, 4, 5, 6, 7]);
+// }, 3000);
 
-on('loaded', function (arr) {
-    console.log(`Данные из [${arr}] получены`)
-    // выведем в #message сообщение о том, что данные получены
-    // тут код из func1
-});
+// on('loaded', function (arr) {
+//     console.log(`Данные из [${arr}] получены`)
+//     // выведем в #message сообщение о том, что данные получены
+//     // тут код из func1
+// });
 
-on('loaded', function (arr) {
-    // тут код из func2
-    const list = document.querySelector('#list');
-    list.innerHTML = '';
-    for (let e of arr) {
-        list.innerHTML += `<li>${e}</li>`
-    }
-    // добавим в #list элементы массива в качестве тегов li
-});
+// on('loaded', function (arr) {
+//     // тут код из func2
+//     const list = document.querySelector('#list');
+//     list.innerHTML = '';
+//     for (let e of arr) {
+//         list.innerHTML += `<li>${e}</li>`
+//     }
+//     // добавим в #list элементы массива в качестве тегов li
+// });
 
-on('loaded', function (arr) {
-    // тут код из func3
-    const amount = document.querySelector('#amount');
-    amount.innerHTML = `Количество элементов - ${arr.length}`;
-    // выведем в #amount количество элементов в массиве
-});
+// on('loaded', function (arr) {
+//     // тут код из func3
+//     const amount = document.querySelector('#amount');
+//     amount.innerHTML = `Количество элементов - ${arr.length}`;
+//     // выведем в #amount количество элементов в массиве
+// });
 
-on('loaded', function (arr) {
-    // тут код из func4
-    const result = document.querySelector('#result');
-    let sum = 0;
-    for (let e of arr) {
-        sum = sum + e;
-    }
-    result.innerHTML = `Сумма всех элементов = ${sum}`;
-    // выведем в #result сумму элементов массива
-});
+// on('loaded', function (arr) {
+//     // тут код из func4
+//     const result = document.querySelector('#result');
+//     let sum = 0;
+//     for (let e of arr) {
+//         sum = sum + e;
+//     }
+//     result.innerHTML = `Сумма всех элементов = ${sum}`;
+//     // выведем в #result сумму элементов массива
+// });
 
-// Функция для испускания события:
-// function emit('имя события', 'данные события') {
+// // Функция для испускания события:
+// // function emit('имя события', 'данные события') {
+// // }
+// // Функция для подписки на событие:
+// // function on('имя события', 'обработчик события') {
+// // }
+// function emit(name, data) {
+//     if (subsribers[name]) {
+//         for (let callback of subsribers[name]) {
+//             callback(data);
+//         }
+//     }
 // }
-// Функция для подписки на событие:
-// function on('имя события', 'обработчик события') {
+// function on(name, callback) {
+//     if (!subsribers[name]) {
+//         subsribers[name] = [];
+//     }
+//     subsribers[name].push(callback);
 // }
-function emit(name, data) {
-    if (subsribers[name]) {
-        for (let callback of subsribers[name]) {
-            callback(data);
-        }
-    }
-}
-function on(name, callback) {
-    if (!subsribers[name]) {
-        subsribers[name] = [];
-    }
-    subsribers[name].push(callback);
-}
 
 /*------------------------Введение в промисы в JavaScript------------------------*/
+
+function promiseFunctionFirst() {
+
+    let promise = new Promise(function (resolve) {
+        let sum = 10;
+        console.log(sum)
+        resolve()
+    })
+    promise.then(function () {
+        console.log('12')
+    })
+
+    // let promise2 = new Promise(function (resolve) {
+    //     setTimeout(function () {
+    //         let result = [1, 2, 3, 4, 5];
+    //         resolve(result);
+    //     }, 2000)
+    // })
+
+    let promise2 = new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve([1, 2, 3, 4, 5]);
+        }, 2000)
+    })
+
+    promise2.then(function (result) {
+        console.log(result)
+    })
+
+
+    const list = document.querySelector('#list');
+
+    let promise3 = new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve('Nikita fuck eeeeee')
+        }, 5000)
+    })
+
+    promise3.then(function (result) {
+        list.innerHTML = result;
+    })
+}
+
+// Исключительные ситуации
+
+let promise4 = new Promise(function (resolve, reject) {
+    setTimeout(function () {
+        let isError = false;
+        if (!isError) {
+            resolve([1, 2, 3, 4, 5]);   // данные промиса
+        } else {
+            reject('error in promise'); // ваш текст ошибки
+        }
+    }, 10000);
+});
+
+promise4.then(function (result) {
+    console.log(result); // выведет результат промиса
+}, function (error) {
+    console.log(error);  // выведет текст ошибки
+});
+
+
+
+let promiseRandom = new Promise(function (resolve, reject) {
+    setTimeout(function () {
+        let rand = (Math.random() * 5).toFixed(0);
+        let res;
+        if (rand != 0) {
+            res = 1 / rand;
+            resolve(res)
+        } else {
+            reject('Случайное число = 0; На ноль нельзя делить')
+        }
+    }, 1000)
+})
+
+
+promiseRandom.then(function (result) {
+    console.log(result);
+}, function (error) {
+    console.log(error)
+})
+
+
+// Использование объекта с ошибкой
+
+// reject(new Error('error in promise')); // объект с ошибкой
+// throw new Error('error in promise'); // эквивалентно reject
+
+
+// Только обработка ошибок
+promiseRandom.catch(
+    function (error) {
+        console.log(error);
+    }
+);
+
+// Состояния промиса
+// При создании промис находится в ожидании (pending)
+// затем может стать исполненным (fulfilled), вернув полученный результат, или отклоненным (rejected)
+
+
+/*---------------------Цепочки промисов в JavaScript---------------------*/
