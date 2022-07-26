@@ -462,7 +462,6 @@ function arrayFunctionPromise() {
         console.log(res)
     })
 }
-
 function practiceAllPromise() {
     function rndm() {
         let rand = (Math.random() * 10000).toFixed(0)
@@ -489,7 +488,6 @@ function practiceAllPromise() {
 }
 
 /*---------------------Создание сработавших промисов в JavaScript---------------------*/
-
 function createResolvePromise() {
     // Promise.resolve
     // Promise.reject
@@ -563,13 +561,11 @@ function promisification() {
 
 /*---------------------Промисы в синхронном стиле в JavaScript---------------------*/
 function promiseInSync() {
-
     function getSmth(num) {
         return new Promise((resolve, reject) => {
             setTimeout(() => resolve(num * num), 1000)
         });
     }
-
     // function func() {
     //     let res = getSmth(2);
     //     console.log(res); // выведет 4
@@ -601,35 +597,35 @@ function promiseInSync() {
 
     func2();
 }
-
-
-function getSmth(num) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => resolve(num * num), 1000)
-    });
-}
-function getSmth2(num) {
-    return new Promise((resolve, reject) => {
-        reject('Error not actual :)')
-    });
-}
-// Перепишите его через синхронный синтаксис промисов.
-async function func() {
-    let res1 = await getSmth(2);
-    let res2 = await getSmth(3);
-    let res3 = await getSmth(4);
-    console.log(res1 + res2 + res3);
-}
-
-func();
-
-// Обработка исключительных ситуаций
-async function func2() {
-    try {
-        let res = await getSmth2(2);
-        console.log(res);
-    } catch (err) {
-        console.log(err);
+function practiceAsync() {
+    function getSmth(num) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => resolve(num * num), 1000)
+        });
     }
+    function getSmth2(num) {
+        return new Promise((resolve, reject) => {
+            reject('Error not actual :)')
+        });
+    }
+    // Перепишите его через синхронный синтаксис промисов.
+    async function func() {
+        let res1 = await getSmth(2);
+        let res2 = await getSmth(3);
+        let res3 = await getSmth(4);
+        console.log(res1 + res2 + res3);
+    }
+
+    func();
+
+    // Обработка исключительных ситуаций
+    async function func2() {
+        try {
+            let res = await getSmth2(2);
+            console.log(res);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    func2();
 }
-func2();
